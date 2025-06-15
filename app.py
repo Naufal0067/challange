@@ -1,26 +1,25 @@
-from flask import Flask, render_template, request, redirect, make_response
+from flask import Flask, request, redirect, render_template, make_response
 
 app = Flask(__name__)
 
-@app.route('/', methods=['GET'])
+@app.route('/')
 def login_page():
     return render_template('login.html')
 
 @app.route('/login', methods=['POST'])
 def login():
-    user = request.form.get('user')
-    pw = request.form.get('password')
-    # Tidak memeriksa password sama sekali!
+    username = request.form.get('username')
+    password = request.form.get('password')
     resp = make_response(redirect('/flag'))
-    resp.set_cookie('username', user or '')
-    resp.set_cookie('password', pw or '')
-    resp.set_cookie('admin', 'False')
+    resp.set_cookie('username', username or '')
+    resp.set_cookie('password', password or '')
+    resp.set_cookie('admin', 'false')
     return resp
 
 @app.route('/flag')
 def flag():
-    admin = request.cookies.get('admin', 'False')
-    if admin == 'True':
+    admin = request.cookies.get('admin')
+    if admin == 'true':
         return render_template('flag.html')
     return "<h3>Access Denied. You are not admin.</h3>", 403
 
